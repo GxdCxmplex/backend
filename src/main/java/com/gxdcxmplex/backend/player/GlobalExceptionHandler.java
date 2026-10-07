@@ -20,4 +20,12 @@ public class GlobalExceptionHandler {
         response.put("fields", fields);
         return ResponseEntity.badRequest().body(response);
     }
+
+    @ExceptionHandler(PlayerNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handlePlayerNotFound(PlayerNotFoundException exception){
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", exception.getMessage());
+
+        return ResponseEntity.status(404).body(response);
+    }
 }

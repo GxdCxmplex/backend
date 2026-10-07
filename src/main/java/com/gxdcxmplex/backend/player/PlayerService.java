@@ -17,7 +17,7 @@ public class PlayerService {
         return playerRepository.findAll();
     }
     public Player getPlayer(Long id){
-        return playerRepository.findById(id).orElseThrow();
+        return playerRepository.findById(id).orElseThrow(()-> new PlayerNotFoundException("Player not found"));
     }
     public Player createPlayer(Player player){
         return playerRepository.save(player);
@@ -28,7 +28,7 @@ public class PlayerService {
     }
 
     public Player putPlayer(Long id, String username, int level){
-        Player player = playerRepository.findById(id).orElseThrow(()-> new RuntimeException("Player not found"));
+        Player player = playerRepository.findById(id).orElseThrow(()-> new PlayerNotFoundException("Player not found"));
         player.setLevel(level);
         player.setUsername(username);
 
