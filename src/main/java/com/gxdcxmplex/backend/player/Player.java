@@ -11,6 +11,8 @@ public class Player {
     private String username;
     private int level;
 
+    private String passwordHash;
+
     public Player(){
 
     }
@@ -38,5 +40,13 @@ public class Player {
 
     public void setLevel(int level){
         this.level = level;
+    }
+
+    public String getPasswordHash(){
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 }

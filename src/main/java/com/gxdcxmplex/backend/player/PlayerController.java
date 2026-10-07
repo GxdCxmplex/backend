@@ -25,10 +25,16 @@ public class PlayerController {
     public Player getPlayer(@PathVariable Long id){
         return playerService.getPlayer(id);
     }
+
     @PostMapping
     public Player createPlayer(@Valid @RequestBody CreatePlayerRequest request){
         Player player = new Player(request.getUsername(), request.getLevel());
         return playerService.createPlayer(player);
+    }
+
+    @PostMapping("/register")
+    public PlayerResponse register(@Valid @RequestBody RegisterPlayerRequest request){
+        return playerService.register(request);
     }
 
     @DeleteMapping("/{id}")
