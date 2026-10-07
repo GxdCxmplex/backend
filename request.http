@@ -1,0 +1,38 @@
+GET http://localhost:8080/players
+
+###
+
+GET http://localhost:8080/players/1
+
+###
+
+POST http://localhost:8080/players
+Content-Type: application/json
+
+{
+    "username": "Art",
+    "level": 1
+}
+
+###
+POST http://localhost:8080/players
+Content-Type: application/json
+
+{
+  "username": "",
+  "level": -500
+}
+
+###
+
+DELETE http://localhost:8080/players/2
+
+###
+
+PUT http://localhost:8080/players/4
+Content-Type: application/json
+
+{
+  "username": "not art",
+  "level": 69
+}
