@@ -2,37 +2,43 @@ GET http://localhost:8080/players
 
 ###
 
-GET http://localhost:8080/players/1
-
-###
-
-POST http://localhost:8080/players
+POST http://localhost:8080/players/login
 Content-Type: application/json
 
 {
-    "username": "Art",
-    "level": 1
-}
-
-###
-POST http://localhost:8080/players
-Content-Type: application/json
-
-{
-  "username": "",
-  "level": -500
+  "username": "Art",
+  "password": "myPassword123"
 }
 
 ###
 
-DELETE http://localhost:8080/players/2
+GET http://localhost:8080/players
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJBcnQiLCJpYXQiOjE3OTE2NDM4NzIsImV4cCI6MTc5MTY0NDc3Mn0.FbreJlNRs403BatFWolafjpavX3OQm5c3QRqm_0XAMkQyeqyWbDGQi6fCiA6JR19
+
+
+
 
 ###
 
-PUT http://localhost:8080/players/1
+GET http://localhost:8080/players
+Authorization: Bearer abc123
+
+###
+
+POST http://localhost:8080/players/register
 Content-Type: application/json
 
 {
-  "username": "not art",
-  "level": 69
+  "username": "DragonTest",
+  "password": "DragonPassword123"
 }
+
+###
+
+http://localhost:8080/players/4
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJBcnQiLCJpYXQiOjE3OTE2NDM4NzIsImV4cCI6MTc5MTY0NDc3Mn0.FbreJlNRs403BatFWolafjpavX3OQm5c3QRqm_0XAMkQyeqyWbDGQi6fCiA6JR19
+
+###
+
+DELETE http://localhost:8080/players/4
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJBcnQiLCJpYXQiOjE3OTE2NDM4NzIsImV4cCI6MTc5MTY0NDc3Mn0.FbreJlNRs403BatFWolafjpavX3OQm5c3QRqm_0XAMkQyeqyWbDGQi6fCiA6JR19

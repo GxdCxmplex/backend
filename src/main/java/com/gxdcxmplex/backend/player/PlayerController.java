@@ -18,16 +18,16 @@ public class PlayerController {
         this.playerService = playerService;
     }
     @GetMapping
-    public List<Player> getPlayers(){
+    public List<PlayerResponse> getPlayers(){
         return playerService.getPlayers();
     }
     @GetMapping("/{id}")
-    public Player getPlayer(@PathVariable Long id){
+    public PlayerResponse getPlayer(@PathVariable Long id){
         return playerService.getPlayer(id);
     }
 
     @PostMapping
-    public Player createPlayer(@Valid @RequestBody CreatePlayerRequest request){
+    public PlayerResponse createPlayer(@Valid @RequestBody CreatePlayerRequest request){
         Player player = new Player(request.getUsername(), request.getLevel());
         return playerService.createPlayer(player);
     }
@@ -37,6 +37,13 @@ public class PlayerController {
         return playerService.register(request);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request){
+        String token = playerService.login(request);
+
+        return ResponseEntity.ok(token);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePlayer(@PathVariable Long id){
         playerService.deletePlayer(id);
@@ -44,7 +51,7 @@ public class PlayerController {
     }
 
     @PutMapping("/{id}")
-    public Player putPlayer(@PathVariable Long id, @RequestBody CreatePlayerRequest request){
+    public PlayerResponse putPlayer(@PathVariable Long id, @RequestBody CreatePlayerRequest request){
         return playerService.putPlayer(id, request.getUsername(), request.getLevel());
     }
 }

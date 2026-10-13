@@ -8,6 +8,7 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
+    @Column(unique = true, nullable = false)
     private String username;
     private int level;
 
