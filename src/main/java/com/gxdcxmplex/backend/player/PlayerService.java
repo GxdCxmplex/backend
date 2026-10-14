@@ -1,6 +1,8 @@
 package com.gxdcxmplex.backend.player;
 
 import com.gxdcxmplex.backend.security.JwtService;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
@@ -22,48 +25,30 @@ public class PlayerService {
     public List<PlayerResponse> getPlayers(){
         return playerRepository.findAll()
                 .stream()
-                .map(player -> new PlayerResponse(player.getId(), player.getUsername(), player.getLevel()))
+                .map(PlayerResponse::from)
                 .toList();
-    }
-    public PlayerResponse getPlayer(Long id){
-        Player player = playerRepository.findById(id).orElseThrow(() -> new PlayerNotFoundException("Player not found"));
-        return new PlayerResponse(player.getId(), player.getUsername(), player.getLevel());
-    }
-    public PlayerResponse createPlayer(Player player){
-        Player savedPlayer = playerRepository.save(player);
-        return new PlayerResponse(savedPlayer.getId(), savedPlayer.getUsername(), savedPlayer.getLevel());
-    }
-
-    public void deletePlayer(Long id){
-        playerRepository.deleteById(id);
-    }
-
-    public PlayerResponse putPlayer(Long id, String username, int level){
-        Player player = playerRepository.findById(id).orElseThrow(()-> new PlayerNotFoundException("Player not found"));
-        player.setLevel(level);
-        player.setUsername(username);
-
-        Player savedPlayer = playerRepository.save(player);
-
-        return new PlayerResponse(savedPlayer.getId(), savedPlayer.getUsername(), savedPlayer.getLevel());
     }
 
     public PlayerResponse register(RegisterPlayerRequest request){
         if (playerRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Username already taken");
+            throw new UsernameTakenException();
         }
         Player player = new Player(request.getUsername(), 1);
         player.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        Player savedPlayer = playerRepository.save(player);
-        return new PlayerResponse(savedPlayer.getId(), savedPlayer.getUsername(), savedPlayer.getLevel());
+       try {
+           Player savedPlayer = playerRepository.saveAndFlush(player);
+           return PlayerResponse.from(savedPlayer);
+       } catch (DataIntegrityViolationException e){
+           throw new UsernameTakenException();
+       }
     }
 
     public String login(LoginRequest request){
         Player player = playerRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new PlayerNotFoundException("invalid username or password"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         if (!passwordEncoder.matches(request.getPassword(), player.getPasswordHash())){
-            throw new PlayerNotFoundException("Invalid username or password");
+            throw new InvalidCredentialsException();
         }
 
         return jwtService.generateToken(player.getUsername());
@@ -74,5 +59,9 @@ public class PlayerService {
                 .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
 
         return new PlayerResponse(player.getId(), player.getUsername(), player.getLevel());
+    }
+    @Transactional
+    public void deletePlayerByUsername(String username) {
+        playerRepository.findByUsername(username).ifPresent(playerRepository::delete);
     }
 }

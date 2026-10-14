@@ -6,12 +6,13 @@ import jakarta.persistence.*;
 public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column(unique = true, nullable = false)
     private String username;
     private int level;
 
+    @Column(nullable = false)
     private String passwordHash;
 
     public Player(){
@@ -24,7 +25,7 @@ public class Player {
     }
 
     public Long getId(){
-        return Id;
+        return id;
     }
 
     public String getUsername(){

@@ -4,8 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -16,22 +14,14 @@ public class PlayerController {
 
     private final PlayerService playerService;
 
+    public record LoginResponse(String token) {}
+
     public PlayerController(PlayerService playerService){
         this.playerService = playerService;
     }
     @GetMapping
     public List<PlayerResponse> getPlayers(){
         return playerService.getPlayers();
-    }
-    @GetMapping("/{id}")
-    public PlayerResponse getPlayer(@PathVariable Long id){
-        return playerService.getPlayer(id);
-    }
-
-    @PostMapping
-    public PlayerResponse createPlayer(@Valid @RequestBody CreatePlayerRequest request){
-        Player player = new Player(request.getUsername(), request.getLevel());
-        return playerService.createPlayer(player);
     }
 
     @PostMapping("/register")
@@ -41,28 +31,18 @@ public class PlayerController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request){
-        String token = playerService.login(request);
-
-        return ResponseEntity.ok(token);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlayer(@PathVariable Long id){
-        playerService.deletePlayer(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}")
-    public PlayerResponse putPlayer(@PathVariable Long id, @RequestBody CreatePlayerRequest request){
-        return playerService.putPlayer(id, request.getUsername(), request.getLevel());
+    public LoginResponse login(@Valid @RequestBody LoginRequest request){
+        return new LoginResponse(playerService.login(request));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<PlayerResponse> getCurrentPlayer(Authentication authentication) {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        return ResponseEntity.ok(playerService.getPlayerByUsername(authentication.getName()));
+    public PlayerResponse me(Authentication authentication) {
+        return playerService.getPlayerByUsername(authentication.getName());
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMe(Authentication authentication){
+        playerService.deletePlayerByUsername(authentication.getName());
+        return ResponseEntity.noContent().build();
     }
 }

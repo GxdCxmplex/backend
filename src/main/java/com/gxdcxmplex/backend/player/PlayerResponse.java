@@ -23,4 +23,8 @@ public class PlayerResponse {
     public int getLevel() {
         return level;
     }
+
+    public static PlayerResponse from(Player player) {
+        return new PlayerResponse(player.getId(), player.getUsername(), player.getLevel());
+    }
 }
