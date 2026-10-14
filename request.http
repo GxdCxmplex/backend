@@ -15,7 +15,10 @@ Content-Type: application/json
 GET http://localhost:8080/players
 Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJBcnQiLCJpYXQiOjE3OTE2NDM4NzIsImV4cCI6MTc5MTY0NDc3Mn0.FbreJlNRs403BatFWolafjpavX3OQm5c3QRqm_0XAMkQyeqyWbDGQi6fCiA6JR19
 
+###
 
+GET http://localhost:8080/players/me
+Authorization: Bearer eyJhbGciOiJIUzM4CJ9.eyJzdWIiOiJBcnQiLCJpYXQiOjE3OTE5NjIwNDcsImV4cCI6MTc5MTk2Mjk0N30.N0QQGTsSGOR2fiuqeRYKspSL-miw44RSFDx6pE8U6w5z3m55cQHBPSP780aNzoH3
 
 
 ###

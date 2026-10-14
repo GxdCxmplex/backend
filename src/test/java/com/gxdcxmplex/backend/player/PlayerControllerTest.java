@@ -7,7 +7,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.gxdcxmplex.backend.security.JwtService;
-import com.gxdcxmplex.backend.security.JwtAuthenticationFilter;
 
 import java.util.List;
 
@@ -68,13 +67,13 @@ public class PlayerControllerTest {
         String request = """
                 {
                     "username": "TestPlayer",
-                    "password": "StrongPassword
+                    "password": "StrongPassword"
                 }
                 """;
 
         mockMvc.perform(post("/players/register")
-                .contentType("application/json")
-                .content(request))
+                        .contentType("application/json")
+                        .content(request))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.username").value("TestPlayer"))

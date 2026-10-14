@@ -1,21 +1,26 @@
 package com.gxdcxmplex.backend.security;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
 public class JwtService {
 
-    private final SecretKey secretKey = Keys.hmacShaKeyFor(
-            "my-super-secret-key-that-is-at-least-32-characters-long".getBytes()
-    );
+    private final SecretKey secretKey;
 
     private static final long TOKEN_EXPIRATION_MS = 15 * 60 * 1000;
 
+    public JwtService(@Value("${jwt.secret}") String secret) {
+        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    }
     public String generateToken(String username){
         Date now = new Date();
         Date expiration = new Date(now.getTime() + TOKEN_EXPIRATION_MS);

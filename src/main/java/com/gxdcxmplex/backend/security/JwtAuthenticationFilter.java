@@ -1,5 +1,6 @@
 package com.gxdcxmplex.backend.security;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 
 @Component
@@ -33,27 +35,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token = authHeader.substring(7);
-
-        try {
-            String username = jwtService.extractUsername(token);
-
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-
+        if (authHeader != null && !authHeader.startsWith("Bearer ")) {
+            try {
+                String username = jwtService.extractUsername(authHeader.substring(7));
+                var authentication = new UsernamePasswordAuthenticationToken(username, null, List.of());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (JwtException | IllegalArgumentException e) {
+                SecurityContextHolder.clearContext();
             }
-        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException exception) {
-            SecurityContextHolder.clearContext();
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT");
-            return;
         }
         filterChain.doFilter(request, response);
     }

@@ -1,10 +1,12 @@
 package com.gxdcxmplex.backend.player;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -33,8 +35,9 @@ public class PlayerController {
     }
 
     @PostMapping("/register")
-    public PlayerResponse register(@Valid @RequestBody RegisterPlayerRequest request){
-        return playerService.register(request);
+    public ResponseEntity<PlayerResponse> register(@Valid @RequestBody RegisterPlayerRequest request){
+        PlayerResponse response = playerService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
@@ -53,5 +56,13 @@ public class PlayerController {
     @PutMapping("/{id}")
     public PlayerResponse putPlayer(@PathVariable Long id, @RequestBody CreatePlayerRequest request){
         return playerService.putPlayer(id, request.getUsername(), request.getLevel());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<PlayerResponse> getCurrentPlayer(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(playerService.getPlayerByUsername(authentication.getName()));
     }
 }

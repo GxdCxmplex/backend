@@ -68,4 +68,11 @@ public class PlayerService {
 
         return jwtService.generateToken(player.getUsername());
     }
+
+    public PlayerResponse getPlayerByUsername(String username) {
+        Player player = playerRepository.findByUsername(username)
+                .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
+
+        return new PlayerResponse(player.getId(), player.getUsername(), player.getLevel());
+    }
 }
