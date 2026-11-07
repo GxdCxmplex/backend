@@ -7,10 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
@@ -22,6 +20,7 @@ public class PlayerService {
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
+    @Transactional(readOnly = true)
     public List<PlayerResponse> getPlayers(){
         return playerRepository.findAll()
                 .stream()
@@ -42,7 +41,7 @@ public class PlayerService {
            throw new UsernameTakenException();
        }
     }
-
+    @Transactional(readOnly = true)
     public String login(LoginRequest request){
         Player player = playerRepository.findByUsername(request.getUsername())
                 .orElseThrow(InvalidCredentialsException::new);
@@ -53,12 +52,12 @@ public class PlayerService {
 
         return jwtService.generateToken(player.getUsername());
     }
-
+    @Transactional
     public PlayerResponse getPlayerByUsername(String username) {
         Player player = playerRepository.findByUsername(username)
                 .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
 
-        return new PlayerResponse(player.getId(), player.getUsername(), player.getLevel());
+        return PlayerResponse.from(player);
     }
     @Transactional
     public void deletePlayerByUsername(String username) {

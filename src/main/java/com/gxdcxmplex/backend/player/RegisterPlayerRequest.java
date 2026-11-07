@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 public class RegisterPlayerRequest {
 
     @NotBlank
+    @Size(min = 3, max = 32)
     private String username;
 
     @NotBlank

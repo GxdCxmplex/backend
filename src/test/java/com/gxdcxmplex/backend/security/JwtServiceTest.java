@@ -1,12 +1,15 @@
 package com.gxdcxmplex.backend.security;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Encoders;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class JwtServiceTest {
 
-    private final JwtService jwtService = new JwtService();
+    private final String secret = Encoders.BASE64.encode(Jwts.SIG.HS256.key().build().getEncoded());
+    private final JwtService jwtService = new JwtService(secret);
 
     @Test
     void generatedTokenContainsCorrectUsername(){

@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -35,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && !authHeader.startsWith("Bearer ")) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
                 String username = jwtService.extractUsername(authHeader.substring(7));
                 var authentication = new UsernamePasswordAuthenticationToken(username, null, List.of());

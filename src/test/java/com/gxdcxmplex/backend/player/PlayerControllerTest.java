@@ -30,7 +30,7 @@ public class PlayerControllerTest {
     @Test
     void getPlayerReturnsPlayerList() throws Exception {
         when(playerService.getPlayers()).thenReturn(
-                List.of(new PlayerResponse(1l, "TestPlayer", 5))
+                List.of(new PlayerResponse(1L, "TestPlayer", 5))
         );
 
         mockMvc.perform(get("/players"))
